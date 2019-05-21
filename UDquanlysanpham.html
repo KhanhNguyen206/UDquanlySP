@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UDQuanLySP</title>
+</head>
+<body>
+<div>
+    <h2>Add New Product</h2><br/>
+    <input type="text" id="newProduct" placeholder="New Product">
+    <input type="button" id="addBtn" value="Add" onclick="addNewProduct();">
+</div>
+<div>
+    <h2>Display All Product</h2><br/>
+    <table>
+        <tr>
+            <td>Product Name</td>
+            <td><p id="numberProduct"></p></td>
+        </tr>
+    </table>
+    <table id="tableProduct"></table>
+</div>
+<div id="editClass">
+    <h2>Edit Product</h2>
+    <table>
+        <tr>
+            <td><input type="text" id="editText"></td>
+            <td><input type="button" id="editProduct" value="Edit" onclick="editProduct();"></td>
+        </tr>
+    </table>
+</div>
+
+
+<script>
+    var namePhone = ['Sony Experia', 'Samsung Galaxy', 'Samsung Note 8', 'Samsung Note 9', 'IphoneXR', 'IphoneXS'];
+    var edit = 0;
+    /////Hàm đếm số lượng Product///////
+    function printNumberProduct() {
+        console.log(namePhone.length);
+        document.getElementById("numberProduct").innerHTML = namePhone.length + " Product";
+    }
+    //////Hàm in danh sách sản phẩm trong mảng ra màn hình, sử dụng vòng lặp for///////////////////////
+    function printProduct() {
+        document.getElementById("tableProduct").innerHTML = "";
+        for (let i = 0; i < namePhone.length; i++) {
+            let tr = "<tr>";
+            tr += `<td >${namePhone[i]}</td><td><input type='button' class='edit' value='Edit' id='${i}'></td><td><input type='button' id='${i}' class='delete' value='Delete'></td>`;
+            tr += "</tr>";
+            document.getElementById("tableProduct").innerHTML += tr;
+        }
+        printNumberProduct();
+    }
+    printProduct();
+    //////////Hàm gắn thêm sản phẩm mới////////////
+    function addNewProduct() {
+        let newProduct = document.getElementById('newProduct');
+        namePhone.push(newProduct.value);
+        newProduct.value = "";
+        printProduct();
+    }
+    //////////////Hàm xoá phần tử khỏi 1 mảng///////////////////////
+    function deleteElement(arr, id) {
+        var i = arr.indexOf(arr[parseInt(id)]);
+        if (i != -1) {
+            arr.splice(i, 1);
+        }
+    }
+
+
+    function addEventDelete() {
+        document.querySelectorAll('.delete').forEach(function (item) {
+            item.addEventListener('click', function () {
+                deleteElement(namePhone, item.id);
+                printProduct();
+                addEventDelete();
+            })
+        });
+    }
+    addEventDelete();
+
+
+    function getEditElement(arr, id) {
+        var j = arr.indexOf(arr[parseInt(id)]);
+        console.log(id);
+        console.log(j);
+        if (j != -1){
+            edit = id;
+            document.getElementById("editText").value = arr[j];
+        }
+    }
+
+
+    function addEventEdit() {
+        document.querySelectorAll('.edit').forEach(function (item) {
+            item.addEventListener('click', function () {
+                console.log(item.id);
+                getEditElement(namePhone, item.id);
+                document.getElementById("editClass").style.display = 'block';
+            })
+        });
+    }
+    addEventEdit();
+
+
+    function editProduct() {
+        namePhone[edit] = document.getElementById("editText").value;
+        printProduct();
+        document.getElementById("editClass").style.display = 'none';
+        addEventEdit();
+        addEventDelete();
+    }
+
+</script>
+
+</body>
+</html>
